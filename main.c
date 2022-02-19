@@ -21,6 +21,30 @@ void* IntSum(void* el1, void* el2){
     return (void*)res;
 }
 
+void* IntMult(void* el1, void* el2){
+    int* first = (int*)el1;
+    int* second = (int*)el2;
+    int* res = malloc(sizeof(int));
+    *res = *first * *second;
+    return (void*)res;
+}
+
+void* DoubleSum(void* el1, void* el2){
+    double* first = (double*)el1;
+    double* second = (double*)el2;
+    double* res = malloc(sizeof(double));
+    *res = *first + *second;
+    return (void*)res;
+}
+
+void* DoubleMult(void* el1, void* el2){
+    double* first = (double*)el1;
+    double* second = (double*)el2;
+    double* res = malloc(sizeof(double));
+    *res = *first * *second;
+    return (void*)res;
+}
+
 void* ComplexSum(void* el1, void* el2){
     struct ComplexNumber* first = (struct ComplexNumber*)el1;
     struct ComplexNumber* second = (struct ComplexNumber*)el2;
@@ -29,19 +53,75 @@ void* ComplexSum(void* el1, void* el2){
     return (void*)res;
 }
 
-void PrintComplexList(struct ComplexNumber* mas, int N){
-    int i;
-    for (i = 0; i < N; i++){
-        printf("%d) %d + %di\n", i + 1, mas[i].x, mas[i].y);
-    }
+void* ComplexMult(void* el1, void* el2){
+    struct ComplexNumber* first = (struct ComplexNumber*)el1;
+    struct ComplexNumber* second = (struct ComplexNumber*)el2;
+    struct ComplexNumber* res = malloc(sizeof(struct ComplexNumber));
+    res = MulComplexNumbers(first, second);
+    return (void*)res;
 }
 
-int main(){
+
+
+
+void PrintComplex(void* n){
+    struct ComplexNumber* element = (struct ComplexNumber*) n;
+    printf("%d + %di", element->x, element->y);
+}
+
+
+void PrintDouble(void* n){
+    double* element = (double *) n;
+    printf("%f", *element);
+}
+
+void PrintInt(void* n){
+    int* element = (int *) n;
+    printf("%d", *element);
+}
+
+
+
+int main3(){
+    struct RingInfo* ringinfo;
+    ringinfo = malloc(sizeof(struct RingInfo));
+    ringinfo->size = sizeof(double);
+    ringinfo->sum = DoubleSum;
+    ringinfo->mul = DoubleMult;
+    ringinfo->PrintEl = PrintDouble;
+
+
+
+    int i;
+    int N = 5;
+    double* mas1 = malloc(sizeof(double) * N);
+    double* mas2 = malloc(sizeof(double) * N);
+    for (i = 0; i < N; i++){
+        mas1[i] = (rand() % 1000) / 100.0;
+        mas2[i] = (rand() % 1000) / 100.0;
+    }
+    struct Vector* vec1 = CreateVector(ringinfo, N, mas1);
+    struct Vector* vec2 = CreateVector(ringinfo, N, mas2);
+    struct Vector* vec3 = Sum(vec1, vec2);
+
+    Print(vec1);
+    Print(vec2);
+    Print(vec3);
+    void* scal = ScalarMult(vec1, vec2);
+    printf("Skalar Mult = ");
+    PrintDouble(scal);
+    printf("\n");
+}
+
+
+int main2(){
 
     struct RingInfo* ringinfo;
     ringinfo = malloc(sizeof(struct RingInfo));
     ringinfo->size = sizeof(struct ComplexNumber);
     ringinfo->sum = ComplexSum;
+    ringinfo->mul = ComplexMult;
+    ringinfo->PrintEl = PrintComplex;
 
     int i;
     int N = 5;
@@ -56,19 +136,26 @@ int main(){
     struct Vector* vec1 = CreateVector(ringinfo, N, mas1);
     struct Vector* vec2 = CreateVector(ringinfo, N, mas2);
     struct Vector* vec3 = Sum(vec1, vec2);
-    PrintComplexList(vec1->elements, N);
-    PrintComplexList(vec2->elements, N);
-    PrintComplexList(vec3->elements, N);
+    Print(vec1);
+    Print(vec2);
+    Print(vec3);
+    void* scal = ScalarMult(vec1, vec2);
+    printf("Skalar Mult = ");
+    PrintComplex(scal);
+    printf("\n");
     return 0;
 }
 
 
-int main2() {
+int main() {
     struct Vector vec;
     struct RingInfo* ringinfo;
     ringinfo = malloc(sizeof(struct RingInfo));
     ringinfo->size = sizeof(int);
     ringinfo->sum = IntSum;
+    ringinfo->mul = IntMult;
+    ringinfo->PrintEl = PrintInt;
+
     vec.N = 6;
     int* mas1 = malloc(sizeof(int) * 6);
     mas1[0] = 1;
@@ -94,13 +181,23 @@ int main2() {
     vec2->ringInfo = ringinfo;
 
     struct Vector* mas3= Sum(vec1, vec2);
-    vivod(vec1->elements, 6);
-    vivod(vec2->elements, 6);
-    vivod(mas3->elements, 6);
+
+
+
+    Print(vec1);
+    Print(vec2);
+    Print(mas3);
+
+    void* scal = ScalarMult(vec1, vec2);
+    printf("Skalar Mult = ");
+    PrintInt(scal);
+    printf("\n");
 
     FreeVector(vec1);
     FreeVector(vec2);
     FreeVector(mas3);
     free(ringinfo);
+    main2();
+    main3();
     return 0;
 }

@@ -20,7 +20,4 @@ struct ComplexNumber* MulComplexNumbers(struct ComplexNumber *n1, struct Complex
     number->y = n1->x * n2->y + n2->x * n1->y;
     return number;
 }
-void PrintComplexNumber(struct ComplexNumber *n){
-    printf("%d + %di\n", n->x, n->y);
-}
 
