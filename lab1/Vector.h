@@ -68,6 +68,15 @@ void* GetElement(struct Vector* vect, int index){
 
 struct Vector* Sum(struct Vector* vector1, struct Vector* vector2) // более "семантично"
 {
+    if (vector1->N != vector2->N){
+        printf("ERROR, Разная размерность!\n");
+        FreeRingInfo(vector1->ringInfo);
+        FreeRingInfo(vector2->ringInfo);
+        FreeVector(vector1);
+        FreeVector(vector2);
+        exit(0);
+
+    }
     struct Vector* result = malloc(sizeof(struct Vector));
     result->ringInfo = vector1->ringInfo;
     result->N = vector1->N;
@@ -83,6 +92,15 @@ struct Vector* Sum(struct Vector* vector1, struct Vector* vector2) // более
 
 
 void* ScalarMult(struct Vector* vector1, struct Vector* vector2) {
+    if (vector1->N != vector2->N){
+        printf("ERROR, Разная размерность!\n");
+        FreeRingInfo(vector1->ringInfo);
+        FreeRingInfo(vector2->ringInfo);
+        FreeVector(vector1);
+        FreeVector(vector2);
+        exit(0);
+    }
+
     if (vector1->N < 1){
         struct Vector* result = malloc(sizeof(struct Vector));
         result->ringInfo = vector1->ringInfo;
